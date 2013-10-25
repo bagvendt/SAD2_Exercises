@@ -1,6 +1,15 @@
-import MySQLdb as mdb
+import pickle
+import sys
+sys.setrecursionlimit(50000)
 
 __author__ = "Marcus Bjerg Gregersen"
+
+USE_CACHE = True
+
+if not USE_CACHE:
+	import MySQLdb as mdb
+
+
 
 SQL_GET_RATED_ACTORS = """
 	SELECT * FROM (
@@ -114,11 +123,23 @@ def approx_vertex_cover(edges):
 				edges.remove(edge)
 	return vertex_cover
 
+if not USE_CACHE:
+	data = get_data()
+	with open('cached.pickle', 'wb') as handle:
+		pickle.dump(data, handle)
+else:
+	with open('cached.pickle', 'rb') as handle:
+		data = pickle.load(handle)
 
-(v,e) = get_data()
-print len(v)
+(v,e) = data
+#print len(v)
 
 res = approx_vertex_cover(e)
-print len(res)
+#print len(res)
+
+
+#Printing a vertex cover
+for vert in res:
+	print vert
 
 
